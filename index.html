@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estúdio Talita Linda - GlowAgenda Pro</title>
+    <style>
+        :root {
+            --primary: #ff6b8b;
+            --primary-hover: #ff477e;
+            --secondary: #f8f9fa;
+            --text: #2d3436;
+            --border: #eed9dc;
+            --success: #2ed573;
+            --warning: #ffa502;
+            --info: #00d2d3;
+            --bg-body: #fceef0;
+        }
+
+        /* Temas de Plano de Fundo */
+        body.theme-rosa { --bg-body: #fceef0; }
+        body.theme-lavanda { --bg-body: #f1f0f7; }
+        body.theme-dark { --bg-body: #2f3640; color: #f5f6fa; }
+        body.theme-salmao { --bg-body: #fff2ec; }
+
+        body.theme-dark .form-group, 
+        body.theme-dark .card,
+        body.theme-dark .mini-box,
+        body.theme-dark nav.nav-bottom,
+        body.theme-dark .day-tab-header {
+            background: #353b48;
+            color: #f5f6fa;
+            border-color: #718093;
+        }
+        body.theme-dark input, body.theme-dark select {
+            background: #2f3640;
+            color: white;
+            border-color: #718093;
+        }
+        body.theme-dark h3 { color: #dcdde1; }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text);
+            padding-bottom: 90px;
+            transition: background 0.3s ease;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), #ff8eaf);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        main {
+            padding: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        h3 {
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #57606f;
+        }
+
+        .form-group {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .checkbox-container input {
+            width: auto;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        button.btn-block {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button.btn-block:active {
+            background-color: var(--primary-hover);
+            transform: scale(0.98);
+        }
+
+        .btn-outline-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-outline-atone {
+            flex: 1;
+            background-color: transparent;
+            color: #00d2d3;
+            border: 2px solid #00d2d3;
+            padding: 12px 5px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .btn-outline-atone:active {
+            background-color: rgba(0, 210, 211, 0.1);
+        }
+
+        .time-slots-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .time-slot-btn {
+            background-color: #f1f2f6;
+            border: 2px solid #ced6e0;
+            padding: 10px 5px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .time-slot-btn.selected {
+            background-color: var(--primary) !important;
+            border-color: var(--primary-hover) !important;
+            color: white !important;
+        }
+
+        .sub-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .sub-nav-btn {
+            flex: 1;
+            padding: 10px;
+            background: #e4cbd0;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #7a525a;
+            cursor: pointer;
+        }
+        .sub-nav-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .finance-section { display: none; }
+        .finance-section.active { display: block; }
+
+        .finance-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+        .mini-box {
+            background: white;
+            padding: 12px 5px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+            border-bottom: 4px solid var(--primary);
+        }
+        .mini-box.realizado { border-bottom-color: var(--success); }
+        .mini-box h4 { font-size: 0.75rem; color: #7f8c8d; text-transform: uppercase; margin-bottom: 4px; }
+        .mini-box .val { font-size: 0.95rem; font-weight: bold; }
+
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-info .time { font-weight: bold; color: var(--primary); }
+
+        .btn-delete { background: #ff4757; color: white; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-delete:active { background: #ff2e44; }
+
+        /* Status de Conexão */
+        .status-badge {
+            text-align: center;
+            font-size: 0.8rem;
+            padding: 6px;
+            font-weight: bold;
+            background-color: var(--success);
+            color: white;
+            transition: background 0.3s;
+        }
+        .status-badge.offline {
+            background-color: var(--warning);
+        }
+
+        /* Abas Retráteis por Dia */
+        .day-tab-container { margin-bottom: 12px; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .day-tab-header { background: white; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: bold; border-left: 5px solid var(--primary); user-select: none; }
+        .day-tab-info { display: flex; flex-direction: column; gap: 2px; }
+        .day-tab-arrow { font-size: 1.2rem; color: var(--primary); transition: transform 0.3s; }
+        .day-tab-container.open .day-tab-arrow { transform: rotate(90deg); }
+        .day-tab-content { display: none; padding: 10px; background: rgba(255, 255, 255, 0.4); border-top: 1px solid var(--border); }
+        .day-tab-container.open .day-tab-content { display: block; }
+
+        nav.nav-bottom {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-item { padding: 10px 0; text-align: center; flex: 1; font-size: 0.6rem; color: #a4b0be; cursor: pointer; font-weight: 600; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item icon { display: block; font-size: 1.1rem; margin-bottom: 2px; }
+        
+        .tip-box { background-color: #e3faef; border-left: 4px solid var(--success); padding: 10px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 15px; color: #1e7e43; }
+    </style>
+</head>
+<body class="theme-rosa">
+
+    <div id="conexao-status" class="status-badge">🟢 Aplicativo Pronto e Operando Off-line</div>
+
+    <header>
+        <h1>Estúdio Talita Linda 💅</h1>
+    </header>
+
+    <main>
+        <!-- TELA 1: AGENDAR (Home) -->
+        <section id="page-agenda" class="page active">
+            <h2>Novo Agendamento</h2>
+            <div class="tip-box">
+                💾 <strong>Armazenamento Local Ativo!</strong> Tudo é salvo no aparelho de forma 100% off-line automaticamente.
+            </div>
+            <div class="form-group">
+                <form id="form-agendamento">
+                    <label>1. Escolha a Data</label>
+                    <input type="date" id="data-agendamento" onchange="gerarBotoesHorario()" required>
+
+                    <label>2. Escolha o Serviço</label>
+                    <select id="select-servico" onchange="gerarBotoesHorario()" required></select>
+
+                    <label id="label-horarios" style="display:none; margin-top: 10px;">3. Horários Livres Calculados (30 em 30 min):</label>
+                    <div class="time-slots-container" id="container-botoes-horarios"></div>
+
+                    <label>4. Selecionar Cliente</label>
+                    <select id="select-cliente" required></select>
+
+                    <input type="hidden" id="horario-selecionado-string" required>
+                    <button type="submit" class="btn-block">Confirmar Agendamento</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TELA 2: HORÁRIOS MARCADOS -->
+        <section id="page-horarios" class="page">
+            <h2>📅 Agenda (Pendentes / Em Andamento)</h2>
+            <div id="lista-agendamentos-abas"></div>
+        </section>
+
+        <!-- TELA 3: CLIENTES -->
+        <section id="page-clientes" class="page">
+            <h2>Gerenciar Clientes</h2>
+            <div class="form-group">
+                <form id="form-cliente">
+                    <label>Nome da Nova Cliente</label>
+                    <input type="text" id="nome-cliente" placeholder="Ex: Ana Souza" required>
+                    <label>Telefone / WhatsApp</label>
+                    <input type="tel" id="tel-cliente" placeholder="Ex: (11) 99999-9999" required>
+                    <button type="submit" class="btn-block" style="background-color: #2ed573;">Cadastrar Cliente</button>
+                </form>
+                
+                <div class="btn-outline-container">
+                    <button type="button" class="btn-block" style="background-color: transparent; color: #00d2d3; border: 2px solid #00d2d3;" onclick="puxarContatoDoCelular()">📱 Importar dos Contatos</button>
+                </div>
+            </div>
+            <h3>Lista de Clientes</h3>
+            <div id="lista-clientes"></div>
+        </section>
+
+        <!-- TELA 4: SERVIÇOS -->
+        <section id="page-servicos" class="page">
+            <h2>Gerenciar Serviços</h2>
+            <div class="form-group">
+                <form id="form-servico">
+                    <label>Nome do Serviço</label>
+                    <input type="text" id="nome-servico" placeholder="Ex: Alongamento" required>
+                    <label>Preço (R$)</label>
+                    <input type="number" id="preco-servico" step="0.01" required>
+                    <label>Duração (minutos)</label>
+                    <input type="number" id="tempo-servico" placeholder="Ex: 60" required>
+                    <button type="submit" class="btn-block" style="background-color: #2ed573;">Cadastrar Serviço</button>
+                </form>
+            </div>
+            <h3>Lista de Serviços</h3>
+            <div id="lista-servicos"></div>
+        </section>
+
+        <!-- TELA 5: FINANÇAS -->
+        <section id="page-financas" class="page">
+            <h2>Controle Financeiro</h2>
+            <div class="sub-nav">
+                <button class="sub-nav-btn" id="btn-sub-previsao" onclick="mudarAbaFinancas('previsao')">🔮 Futuros</button>
+                <button class="sub-nav-btn active" id="btn-sub-realizados" onclick="mudarAbaFinancas('realizados')">✅ Caixa (Concluídos)</button>
+            </div>
+
+            <div id="sec-previsao" class="finance-section">
+                <div class="finance-grid">
+                    <div class="mini-box"><h4>Hoje</h4><div class="val" id="prev-dia">R$ 0,00</div></div>
+                    <div class="mini-box"><h4>Geral</h4><div class="val" id="prev-mes">R$ 0,00</div></div>
+                </div>
+                <h3>Próximos Ganhos</h3>
+                <div id="lista-previstos"></div>
+            </div>
+
+            <div id="sec-realizados" class="finance-section active">
+                <div class="finance-grid">
+                    <div class="mini-box realizado"><h4>Hoje</h4><div class="val" id="real-dia">R$ 0,00</div></div>
+                    <div class="mini-box realizado"><h4>Total Caixa</h4><div class="val" id="real-mes">R$ 0,00</div></div>
+                </div>
+                <h3>Histórico do Caixa</h3>
+                <div id="lista-realizados"></div>
+            </div>
+        </section>
+
+        <!-- TELA 6: CONFIGURAÇÕES -->
+        <section id="page-config" class="page">
+            <h2>⚙️ Configurações do Sistema</h2>
+            <div class="form-group">
+                <form id="form-configuracoes">
+                    <h3>Expediente de Atendimento</h3>
+                    <label>Início do Trabalho</label>
+                    <input type="time" id="cfg-inicio-trabalho" required>
+
+                    <label>Fim do Trabalho</label>
+                    <input type="time" id="cfg-fim-trabalho" required>
+
+                    <hr style="margin: 15px 0; border: 0; border-top: 1px dashed var(--border);">
+
+                    <h3>Intervalo / Almoço</h3>
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="cfg-nao-tem-almoco" onchange="alternarCamposAlmoco()">
+                        <label for="cfg-nao-tem-almoco" style="margin-bottom:0; cursor:pointer;">Não ter horário de almoço</label>
+                    </div>
+
+                    <div id="div-campos-almoco">
+                        <label>Início do Almoço</label>
+                        <input type="time" id="cfg-inicio-almoco">
+
+                        <label>Fim do Almoço</label>
+                        <input type="time" id="cfg-fim-almoco">
+                    </div>
+
+                    <button type="submit" class="btn-block" style="background-color: var(--success); margin-top: 10px;">Salvar Configurações</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <nav class="nav-bottom">
+        <div class="nav-item active" onclick="mudarTela('page-agenda', this)"><icon>📅</icon>Agendar</div>
+        <div class="nav-item" onclick="mudarTela('page-horarios', this)"><icon>📋</icon>Horários</div>
+        <div class="nav-item" onclick="mudarTela('page-clientes', this)"><icon>👤</icon>Clientes</div>
+        <div class="nav-item" onclick="mudarTela('page-servicos', this)"><icon>🛠️</icon>Serviços</div>
+        <div class="nav-item" onclick="mudarTela('page-financas', this)"><icon>💰</icon>Finanças</div>
+        <div class="nav-item" onclick="mudarTela('page-config', this)"><icon>⚙️</icon>Config</div>
+    </nav>
+
+    <script>
+        // --- REGISTRO DO SERVICE WORKER ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker ativo!', reg.scope))
+                .catch(err => console.log('Erro Service Worker:', err));
+            });
+        }
+
+        // --- GERENCIADOR DE BANCO DE DADOS LOCAL ---
+        function carregarDadosLocal(chave, padrao) {
+            const dados = localStorage.getItem(chave);
+            return dados ? JSON.parse(dados) : padrao;
+        }
+
+        function salvarDadosLocal(chave, objeto) {
+            localStorage.setItem(chave, JSON.stringify(objeto));
+        }
+
+        let clientes = carregarDadosLocal('glow_clientes', [
+            { id: 1, nome: "Maria Silva", telefone: "(11) 98888-7777" },
+            { id: 2, nome: "Joana Costa", telefone: "(21) 97777-6666" }
+        ]);
+        
+        let servicos = carregarDadosLocal('glow_servicos', [
+            { id: 1, nome: "Mão Simples", preco: 30.00, tempo: 30 },
+            { id: 2, nome: "Pé e Mão", preco: 55.00, tempo: 60 }
+        ]);
+        
+        let agendamentos = carregarDadosLocal('glow_agendamentos', []);
+
+        let configuracoes = carregarDadosLocal('glow_configuracoes', {
+            inicioTrabalho: "08:00",
+            fimTrabalho: "18:00",
+            naoTemAlmoco: false,
+            inicioAlmoco: "12:00",
+            fimAlmoco: "13:00"
+        });
+
+        const formAgendamento = document.getElementById('form-agendamento');
+        const formCliente = document.getElementById('form-cliente');
+        const formServico = document.getElementById('form-servico');
+        const formConfiguracoes = document.getElementById('form-configuracoes');
+        
+        const selectCliente = document.getElementById('select-cliente');
+        const selectServico = document.getElementById('select-servico');
+        const inputData = document.getElementById('data-agendamento');
+        const containerBotoesHorarios = document.getElementById('container-botoes-horarios');
+        const labelHorarios = document.getElementById('label-horarios');
+        const inputHorarioOculto = document.getElementById('horario-selecionado-string');
+        const listaClientes = document.getElementById('lista-clientes');
+        const listaServicos = document.getElementById('lista-servicos');
+        const listaAgendamentosAbas = document.getElementById('lista-agendamentos-abas');
+
+        inputData.min = new Date().toISOString().split('T')[0];
+
+        window.addEventListener('online', atualizarStatusRede);
+        window.addEventListener('offline', atualizarStatusRede);
+
+        function atualizarStatusRede() {
+            const badge = document.getElementById('conexao-status');
+            if(navigator.onLine) {
+                badge.innerText = "🟢 Aplicativo Operando On-line";
+                badge.classList.remove('offline');
+            } else {
+                badge.innerText = "⚠️ Modo Off-line Ativo (Salvo no Aparelho)";
+                badge.classList.add('offline');
+            }
+        }
+
+        // Inicialização Geral
+        atualizarSelectClientes();
+        atualizarSelectServicos();
+        atualizarStatusRede();
+        carregarCamposConfiguracoes();
+
+        // --- SISTEMA DE IMPORTAÇÃO DA AGENDA DO CELULAR ---
+        async function puxarContatoDoCelular() {
+            if ('contacts' in navigator && 'ContactsManager' in window) {
+                const propriedades = ['name', 'tel'];
+                try {
+                    const contatosSelecionados = await navigator.contacts.select(propriedades, { multiple: false });
+                    
+                    if (contatosSelecionados.length > 0) {
+                        const contato = contatosSelecionados[0];
+                        const nomeDaCliente = contato.name && contato.name[0] ? contato.name[0] : '';
+                        const telefoneDaCliente = contato.tel && contato.tel[0] ? contato.tel[0] : '';
+                        
+                        if (nomeDaCliente) document.getElementById('nome-cliente').value = nomeDaCliente;
+                        if (telefoneDaCliente) document.getElementById('tel-cliente').value = telefoneDaCliente;
+                        
+                        alert("Contato carregado! Agora basta clicar em 'Cadastrar Cliente'.");
+                    }
+                } catch (erro) {
+                    console.log("Seleção cancelada ou falhou: ", erro);
+                }
+            } else {
+                alert("O navegador do seu aparelho bloqueia o acesso direto à agenda por segurança. Digite manualmente os dados nos campos acima.");
+            }
+        }
+
+        // --- NAVEGAÇÃO E TELAS ---
+        function mudarTela(pageId, elemento) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            if(elemento) elemento.classList.add('active');
+
+            if(pageId === 'page-agenda') { atualizarSelectClientes(); atualizarSelectServicos(); gerarBotoesHorario(); }
+            if(pageId === 'page-horarios') atualizarListaHorariosComAbas();
+            if(pageId === 'page-clientes') atualizarListaClientes();
+            if(pageId === 'page-servicos') atualizarListaServicos();
+            if(pageId === 'page-financas') { mudarAbaFinancas('realizados'); atualizarFinancas(); }
+            if(pageId === 'page-config') carregarCamposConfiguracoes();
+        }
+
+        function mudarAbaFinancas(tipo) {
+            document.querySelectorAll('.sub-nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.finance-section').forEach(sec => sec.classList.remove('active'));
+            if(tipo === 'previsao') {
+                document.getElementById('btn-sub-previsao').classList.add('active');
+                document.getElementById('sec-previsao').classList.add('active');
+            } else {
+                document.getElementById('btn-sub-realizados').classList.add('active');
+                document.getElementById('sec-realizados').classList.add('active');
+            }
+        }
+
+        // --- GERENCIADOR DE CONFIGURAÇÕES ---
+        function carregarCamposConfiguracoes() {
+            document.getElementById('cfg-inicio-trabalho').value = configuracoes.inicioTrabalho;
+            document.getElementById('cfg-fim-trabalho').value = configuracoes.fimTrabalho;
+            document.getElementById('cfg-nao-tem-almoco').checked = configuracoes.naoTemAlmoco;
+            document.getElementById('cfg-inicio-almoco').value = configuracoes.inicioAlmoco || "";
+            document.getElementById('cfg-fim-almoco').value = configuracoes.fimAlmoco || "";
+            alternarCamposAlmoco();
+        }
+
+        function alternarCamposAlmoco() {
+            const naoTemAlmoco = document.getElementById('cfg-nao-tem-almoco').checked;
+            const divAlmoco = document.getElementById('div-campos-almoco');
+            if(naoTemAlmoco) {
+                divAlmoco.style.display = 'none';
+                document.getElementById('cfg-inicio-almoco').required = false;
+                document.getElementById('cfg-fim-almoco').required = false;
+            } else {
+                divAlmoco.style.display = 'block';
+                document.getElementById('cfg-inicio-almoco').required = true;
+                document.getElementById('cfg-fim-almoco').required = true;
+            }
+        }
+
+        formConfiguracoes.addEventListener('submit', function(e) {
+            e.preventDefault();
+            configuracoes.inicioTrabalho = document.getElementById('cfg-inicio-trabalho').value;
+            configuracoes.fimTrabalho = document.getElementById('cfg-fim-trabalho').value;
+            configuracoes.naoTemAlmoco = document.getElementById('cfg-nao-tem-almoco').checked;
+            
+            if(!configuracoes.naoTemAlmoco) {
+                configuracoes.inicioAlmoco = document.getElementById('cfg-inicio-almoco').value;
+                configuracoes.fimAlmoco = document.getElementById('cfg-fim-almoco').value;
+            } else {
+                configuracoes.inicioAlmoco = null;
+                configuracoes.fimAlmoco = null;
+            }
+
+            salvarDadosLocal('glow_configuracoes', configuracoes);
+            alert('Configurações de horários salvas com sucesso!');
+            mudarTela('page-agenda', document.querySelectorAll('.nav-item')[0]);
+        });
+
+        // --- SISTEMA DE HORÁRIOS BASEADO NAS CONFIGURAÇÕES ---
+        function gerarBotoesHorario() {
+            containerBotoesHorarios.innerHTML = '';
+            inputHorarioOculto.value = '';
+            const dataSelecionada = inputData.value;
+            const servicoId = selectServico.value;
+            if(!dataSelecionada || !servicoId) { labelHorarios.style.display = 'none'; return; }
+
+            labelHorarios.style.display = 'block';
+            const servicoEncontrado = servicos.find(s => s.id == servicoId);
+            if(!servicoEncontrado) return;
+            const tempoServicoMs = servicoEncontrado.tempo * 60 * 1000;
+
+            let slotAtualTimestamp = new Date(`${dataSelecionada}T${configuracoes.inicioTrabalho}`).getTime();
+            let fimDiaTimestamp = new Date(`${dataSelecionada}T${configuracoes.fimTrabalho}`).getTime();
+            
+            let inicioAlmocoTimestamp = configuracoes.naoTemAlmoco ? 0 : new Date(`${dataSelecionada}T${configuracoes.inicioAlmoco}`).getTime();
+            let fimAlmocoTimestamp = configuracoes.naoTemAlmoco ? 0 : new Date(`${dataSelecionada}T${configuracoes.fimAlmoco}`).getTime();
+
+            const agendamentosDoDia = agendamentos.filter(ag => {
+                return new Date(ag.inicioTimestamp).toLocaleDateString('pt-BR') === new Date(`${dataSelecionada}T00:00:00`).toLocaleDateString('pt-BR');
+            });
+
+            while (slotAtualTimestamp < fimDiaTimestamp) {
+                const horaFimProposta = slotAtualTimestamp + tempoServicoMs;
+                let colidiu = false;
+
+                if (!configuracoes.naoTemAlmoco) {
+                    if (slotAtualTimestamp < fimAlmocoTimestamp && horaFimProposta > inicioAlmocoTimestamp) {
+                        colidiu = true;
+                    }
+                }
+
+                if (!colidiu) {
+                    for(let i = 0; i < agendamentosDoDia.length; i++) {
+                        let ag = agendamentosDoDia[i];
+                        if (slotAtualTimestamp < ag.fimTimestamp && horaFimProposta > ag.inicioTimestamp) { 
+                            colidiu = true; 
+                            break; 
+                        }
+                    }
+                }
+
+                if (!colidiu && (horaFimProposta <= fimDiaTimestamp)) {
+                    const textoHoraSlot = new Date(slotAtualTimestamp).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                    const botao = document.createElement('div');
+                    botao.className = 'time-slot-btn';
+                    botao.innerText = textoHoraSlot;
+                    botao.dataset.timestamp = slotAtualTimestamp;
+                    botao.onclick = function() {
+                        document.querySelectorAll('.time-slot-btn').forEach(b => b.classList.remove('selected'));
+                        botao.classList.add('selected');
+                        inputHorarioOculto.value = botao.dataset.timestamp;
+                    };
+                    containerBotoesHorarios.appendChild(botao);
+                }
+                
+                slotAtualTimestamp += (30 * 60 * 1000);
+            }
+        }
+
+        formAgendamento.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const timestampEscolhido = parseInt(inputHorarioOculto.value);
+            if(!timestampEscolhido) return alert('Selecione o horário!');
+
+            const servicoEncontrado = servicos.find(s => s.id == selectServico.value);
+            const novoInicio = timestampEscolhido;
+            const novoFim = novoInicio + (servicoEncontrado.tempo * 60 * 1000);
+
+            agendamentos.push({
+                id: Date.now(),
+                cliente: selectCliente.value,
+                servico: servicoEncontrado.nome,
+                valor: servicoEncontrado.preco,
+                inicioTimestamp: novoInicio,
+                fimTimestamp: novoFim,
+                dataTexto: `${new Date(novoInicio).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})} - ${new Date(novoFim).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`
+            });
+
+            salvarDadosLocal('glow_agendamentos', agendamentos);
+            formAgendamento.reset();
+            alert('Agendamento salvo no aparelho!');
+            mudarTela('page-horarios', document.querySelectorAll('.nav-item')[1]);
+        });
+
+        function atualizarListaHorariosComAbas() {
+            listaAgendamentosAbas.innerHTML = '';
+            const agoraMs = Date.now();
+            const pendentes = agendamentos.filter(ag => ag.fimTimestamp > agoraMs);
+
+            if (pendentes.length === 0) {
+                listaAgendamentosAbas.innerHTML = '<p style="text-align:center; color:#7f8c8d; padding:20px;">Nenhum agendamento pendente.</p>';
+                return;
+            }
+
+            pendentes.sort((a,b)=>a.inicioTimestamp-b.inicioTimestamp);
+            const gruposPorDia = {};
+            pendentes.forEach(ag => {
+                const diaTexto = new Date(ag.inicioTimestamp).toLocaleDateString('pt-BR');
+                if (!gruposPorDia[diaTexto]) gruposPorDia[diaTexto] = [];
+                gruposPorDia[diaTexto].push(ag);
+            });
+
+            Object.keys(gruposPorDia).forEach((dia, index) => {
+                const tabContainer = document.createElement('div');
+                tabContainer.className = `day-tab-container ${index === 0 ? 'open' : ''}`;
+                tabContainer.innerHTML = `
+                    <div class="day-tab-header" onclick="this.parentElement.classList.toggle('open')">
+                        <div class="day-tab-info"><span>📅 ${dia}</span></div><span class="day-tab-arrow">▶</span>
+                    </div><div class="day-tab-content"></div>`;
+                const content = tabContainer.querySelector('.day-tab-content');
+                gruposPorDia[dia].forEach(ag => {
+                    content.innerHTML += `<div class="card"><div class="card-info"><p class="time">⏰ ${ag.dataTexto}</p><p><strong>${ag.cliente}</strong> - ${ag.servico}</p></div><button class="btn-delete" onclick="removerAgendamento(${ag.id})">X</button></div>`;
+                });
+                listaAgendamentosAbas.appendChild(tabContainer);
+            });
+        }
+
+        function removerAgendamento(id) {
+            if(confirm("Desmarcar horário?")) {
+                agendamentos = agendamentos.filter(a => a.id !== id);
+                salvarDadosLocal('glow_agendamentos', agendamentos);
+                atualizarListaHorariosComAbas();
+            }
+        }
+
+        // --- GERENCIAR CLIENTES ---
+        formCliente.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nome = document.getElementById('nome-cliente').value.trim();
+            const telefone = document.getElementById('tel-cliente').value.trim();
+            clientes.push({ id: Date.now(), nome, telefone });
+            salvarDadosLocal('glow_clientes', clientes);
+            atualizarListaClientes();
+            atualizarSelectClientes();
+            formCliente.reset();
+            alert('Cliente salva localmente!');
+        });
+
+        function atualizarListaClientes() {
+            listaClientes.innerHTML = '';
+            if(clientes.length === 0) {
+                listaClientes.innerHTML = '<p style="text-align:center; color:#7f8c8d; padding:10px;">Nenhum cliente cadastrado.</p>';
+                return;
+            }
+            clientes.forEach(c => {
+                listaClientes.innerHTML += `
+                    <div class="card">
+                        <div><strong>${c.nome}</strong><br>${c.telefone}</div>
+                        <button class="btn-delete" onclick="apagarCliente(${c.id})">X</button>
+                    </div>`;
+            });
+        }
+
+        function apagarCliente(id) {
+            if(confirm("Deseja realmente excluir este cadastro de cliente?")) {
+                clientes = clientes.filter(c => c.id !== id);
+                salvarDadosLocal('glow_clientes', clientes);
+                atualizarListaClientes();
+                atualizarSelectClientes();
+            }
+        }
+
+        // --- GERENCIAR SERVIÇOS ---
+        formServico.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nome = document.getElementById('nome-servico').value.trim();
+            const preco = parseFloat(document.getElementById('preco-servico').value);
+            const tempo = parseInt(document.getElementById('tempo-servico').value);
+            servicos.push({ id: Date.now(), nome, preco, tempo });
+            salvarDadosLocal('glow_servicos', servicos);
+            atualizarListaServicos();
+            atualizarSelectServicos();
+            formServico.reset();
+            alert('Serviço gravado!');
+        });
+
+        function atualizarListaServicos() {
+            listaServicos.innerHTML = '';
+            if(servicos.length === 0) {
+                listaServicos.innerHTML = '<p style="text-align:center; color:#7f8c8d; padding:10px;">Nenhum serviço cadastrado.</p>';
+                return;
+            }
+            servicos.forEach(s => {
+                listaServicos.innerHTML += `
+                    <div class="card">
+                        <div><strong>${s.nome}</strong><br>R$ ${s.preco.toFixed(2)} - ${s.tempo} min</div>
+                        <button class="btn-delete" onclick="apagarServico(${s.id})">X</button>
+                    </div>`;
+            });
+        }
+
+        function apagarServico(id) {
+            if(confirm("Deseja realmente excluir este serviço?")) {
+                servicos = servicos.filter(s => s.id !== id);
+                salvarDadosLocal('glow_servicos', servicos);
+                atualizarListaServicos();
+                atualizarSelectServicos();
+            }
+        }
+
+        // --- ATUALIZADORES DE DROP DOWN ---
+        function atualizarSelectClientes() {
+            selectCliente.innerHTML = '';
+            clientes.forEach(c => selectCliente.innerHTML += `<option value="${c.nome}">${c.nome}</option>`);
+        }
+
+        function atualizarSelectServicos() {
+            selectServico.innerHTML = '';
+            servicos.forEach(s => selectServico.innerHTML += `<option value="${s.id}">${s.nome}</option>`);
+        }
+
+        // --- FINANÇAS ---
+        function atualizarFinancas() {
+            const agoraMs = Date.now();
+            const hojeData = new Date();
+            const inicioHoje = new Date(hojeData.getFullYear(), hojeData.getMonth(), hojeData.getDate()).getTime();
+            const fimHoje = inicioHoje + (24*60*60*1000) - 1;
+
+            let sumPrevDia = 0, sumPrevGeral = 0, sumRealDia = 0, sumRealGeral = 0;
+            const divPrevistos = document.getElementById('lista-previstos');
+            const divRealizados = document.getElementById('lista-realizados');
+            divPrevistos.innerHTML = ''; divRealizados.innerHTML = '';
+
+            agendamentos.forEach(ag => {
+                const jaConcluiu = (agoraMs >= ag.fimTimestamp);
+                const cardHtml = `<div class="card"><div><strong>${ag.cliente}</strong><br>${ag.servico} (${ag.dataTexto})</div><div style="font-weight:bold; color:${jaConcluiu?'var(--success)':'var(--primary)'}">R$ ${ag.valor.toFixed(2)}</div></div>`;
+
+                if (!jaConcluiu) {
+                    divPrevistos.innerHTML += cardHtml;
+                    if (ag.inicioTimestamp >= inicioHoje && ag.inicioTimestamp <= fimHoje) sumPrevDia += ag.valor;
+                    sumPrevGeral += ag.valor;
+                } else {
+                    divRealizados.innerHTML += cardHtml;
+                    if (ag.fimTimestamp >= inicioHoje && ag.fimTimestamp <= fimHoje) sumRealDia += ag.valor;
+                    sumRealGeral += ag.valor;
+                }
+            });
+
+            document.getElementById('prev-dia').innerText = `R$ ${sumPrevDia.toFixed(2)}`;
+            document.getElementById('prev-mes').innerText = `R$ ${sumPrevGeral.toFixed(2)}`;
+            document.getElementById('real-dia').innerText = `R$ ${sumRealDia.toFixed(2)}`;
+            document.getElementById('real-mes').innerText = `R$ ${sumRealGeral.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
