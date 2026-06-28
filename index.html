@@ -159,25 +159,6 @@
             margin-top: 10px;
         }
 
-        .btn-outline-atone {
-            flex: 1;
-            background-color: transparent;
-            color: #00d2d3;
-            border: 2px solid #00d2d3;
-            padding: 12px 5px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none;
-            transition: 0.2s;
-        }
-
-        .btn-outline-atone:active {
-            background-color: rgba(0, 210, 211, 0.1);
-        }
-
         .time-slots-container {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -531,26 +512,37 @@
 
         // --- SISTEMA DE IMPORTAÇÃO DA AGENDA DO CELULAR ---
         async function puxarContatoDoCelular() {
-            if ('contacts' in navigator && 'ContactsManager' in window) {
-                const propriedades = ['name', 'tel'];
-                try {
-                    const contatosSelecionados = await navigator.contacts.select(propriedades, { multiple: false });
+            // Verificamos se o navegador suporta a API de Contatos
+            const suportaContatos = 'contacts' in navigator && 'ContactsManager' in window;
+
+            if (!suportaContatos) {
+                alert("Ops! Seu navegador não suporta a importação direta de contatos. Tente usar o Chrome no Android ou cadastre manualmente.");
+                return;
+            }
+
+            // Definimos quais dados queremos buscar
+            const propriedades = ['name', 'tel'];
+            const opcoes = { multiple: false }; // 'true' se quisesse selecionar vários de uma vez
+
+            try {
+                const contatos = await navigator.contacts.select(propriedades, opcoes);
+
+                if (contatos.length > 0) {
+                    const contato = contatos[0];
                     
-                    if (contatosSelecionados.length > 0) {
-                        const contato = contatosSelecionados[0];
-                        const nomeDaCliente = contato.name && contato.name[0] ? contato.name[0] : '';
-                        const telefoneDaCliente = contato.tel && contato.tel[0] ? contato.tel[0] : '';
-                        
-                        if (nomeDaCliente) document.getElementById('nome-cliente').value = nomeDaCliente;
-                        if (telefoneDaCliente) document.getElementById('tel-cliente').value = telefoneDaCliente;
-                        
-                        alert("Contato carregado! Agora basta clicar em 'Cadastrar Cliente'.");
-                    }
-                } catch (erro) {
-                    console.log("Seleção cancelada ou falhou: ", erro);
+                    // Pegamos o primeiro nome e o primeiro telefone da lista
+                    const nomeImportado = contato.name && contato.name.length > 0 ? contato.name[0] : "";
+                    const telImportado = contato.tel && contato.tel.length > 0 ? contato.tel[0] : "";
+
+                    // Preenchemos os campos do seu formulário automaticamente
+                    document.getElementById('nome-cliente').value = nomeImportado;
+                    document.getElementById('tel-cliente').value = telImportado;
+
+                    alert(`Cliente ${nomeImportado} selecionada! Agora é só clicar em Cadastrar.`);
                 }
-            } else {
-                alert("O navegador do seu aparelho bloqueia o acesso direto à agenda por segurança. Digite manualmente os dados nos campos acima.");
+            } catch (erro) {
+                console.error("Erro ao importar contato:", erro);
+                // Se o usuário cancelar a seleção, não fazemos nada ou avisamos
             }
         }
 
